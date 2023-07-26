@@ -1,43 +1,40 @@
+// reducer.js
+import { FETCH_MOVIES_FAILURE, FETCH_MOVIES_REQUEST, FETCH_MOVIES_SUCCESS } from './rowtype';
+
 const initialState = {
   loading: false,
-  error: '',
-  genres: {}, // Object to store movies by genre
+  moviesByGenre: {
+  },
+  error: null,
 };
 
-const fetch_req = 'fetch_req';
-const fetch_data = 'fetch_data';
-const fetch_err = 'fetch_err';
-
-  
-const moviesReducer = (state = initialState, action) => {
+const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case fetch_req:
+    case FETCH_MOVIES_REQUEST:
       return {
         ...state,
         loading: true,
+        error: null,
       };
-    case fetch_data:
+    case FETCH_MOVIES_SUCCESS:
       const { genre, movies } = action.payload;
-
       return {
         ...state,
         loading: false,
-        error: '',
-        genres: {
-          ...state.genres,
+        moviesByGenre: {
+          ...state.moviesByGenre,
           [genre]: movies,
         },
       };
-    case fetch_err:
+    case FETCH_MOVIES_FAILURE:
       return {
         ...state,
         loading: false,
-        error: action.payload,
+        error: action.payload.error,
       };
     default:
       return state;
   }
 };
 
-  export default moviesReducer;
-  
+export default reducer;

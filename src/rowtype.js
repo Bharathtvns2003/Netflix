@@ -1,3 +1,3 @@
-export const fetch_req = 'fetch_req';
-export const fetch_data = 'fetch_data';
-export const fetch_err = 'fetch_err';
+export const FETCH_MOVIES_REQUEST = 'FETCH_MOVIES_REQUEST';
+export const FETCH_MOVIES_SUCCESS = 'FETCH_MOVIES_SUCCESS';
+export const FETCH_MOVIES_FAILURE = 'FETCH_MOVIES_FAILURE';

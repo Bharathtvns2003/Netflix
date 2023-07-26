@@ -1,22 +1,17 @@
-import { fetch_data, fetch_err, fetch_req } from "./rowtype";
+import { FETCH_MOVIES_FAILURE, FETCH_MOVIES_REQUEST, FETCH_MOVIES_SUCCESS, } from "./rowtype";
 
-export const fetchmoviesRequest = () => {
-    return {
-      type: fetch_req,
-    };
-  };
-      
-  export const fetchmoviesSuccess = (genre, movies) => {
-    return {
-      type: fetch_data,
-      payload: { genre, movies },
-    };
-  };
-  
-  
-export  const fetchmoviesFailure = (error) => {
-    return {
-      type: fetch_err,
-      payload: error,
-    };
-  };
+// actions.js
+export const fetchMoviesRequest = ({ genre, apiUrl }) => ({
+  type: FETCH_MOVIES_REQUEST,
+  payload: { genre, apiUrl },
+});
+
+export const fetchMoviesSuccess = (genre, movies) => ({
+  type: FETCH_MOVIES_SUCCESS,
+  payload: { genre, movies },
+});
+
+export const fetchMoviesFailure = (error) => ({
+  type: FETCH_MOVIES_FAILURE,
+  payload: { error },
+});

@@ -1,43 +1,38 @@
 import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import './Row.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchmoviesRequest, fetchmoviesSuccess, fetchmoviesFailure } from './action';
-import axios from './axios';
 
-export default function Row({ title, fetchUrl, isLargeRow = false }) {
-  const dispatch = useDispatch();
-  const movies = useSelector(state => state.genres[title]);
-  const error = useSelector(state => state.error);
+import { fetchMoviesRequest } from './action';
 
-  const fetchData = () => {
-    dispatch(fetchmoviesRequest());
-    axios
-      .get(fetchUrl)
-      .then((response) => {
-        console.log(response.data.results);
-        const movies = response.data.results;
-        dispatch(fetchmoviesSuccess(title, movies));
-      })
-      .catch((error) => {
-        dispatch(fetchmoviesFailure(error.message));
-      });
-  };
+const mapStateToProps = state => ({
+  movieData: state,
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchMoviesRequestFunc: data => dispatch(fetchMoviesRequest(data)),
+});
+
+
+function Row({ genre, apiUrl, isLargeRow = false, fetchMoviesRequestFunc, movieData }) {
+  const { moviesByGenre } = movieData;
 
   useEffect(() => {
-    fetchData();
-  }, [fetchUrl]);
+    fetchMoviesRequestFunc({ genre, apiUrl });
+  }, [genre, apiUrl, fetchMoviesRequestFunc]);  
 
   // Render only when movies data is available
-  if (!movies) {
+  if (!moviesByGenre || !moviesByGenre[genre]) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className='row'>
       <br />
-      <h2>{title}</h2>
+      <h2>{genre}</h2>
       <div className="row_posters">
-        {movies.map((movie) => {
+        {moviesByGenre[genre].map((movie) => {
           const imageUrl = `https://image.tmdb.org/t/p/original/${isLargeRow ? movie.poster_path : movie.backdrop_path}`;
           return (
             <img
@@ -52,3 +47,14 @@ export default function Row({ title, fetchUrl, isLargeRow = false }) {
     </div>
   );
 }
+
+Row.propTypes = {
+  genre: PropTypes.string.isRequired,
+  apiUrl: PropTypes.string.isRequired,
+  isLargeRow: PropTypes.bool,
+  fetchMoviesRequestFunc: PropTypes.func.isRequired,
+  movieData: PropTypes.object.isRequired,
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Row);
